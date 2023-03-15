@@ -10,6 +10,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         while(true){
+            System.out.println("Current Player Id: " + board.getCurrentPlayer());
             System.out.println("enter row of chessPiece u want to move or -1 to abort game");
             int sRow = Integer.parseInt(scanner.nextLine());
 

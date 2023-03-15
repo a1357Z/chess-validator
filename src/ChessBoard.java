@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ChessBoard {
     int size = 8;
@@ -17,12 +18,19 @@ public class ChessBoard {
         pieces = new ArrayList<>();
         addPieces(u1);
         addPieces(u2);
+
+        printBoard();
+    }
+
+    public int getCurrentPlayer() {
+        return currentPlayer.getId();
     }
 
     private int getVacantRow(){
         int rowIdx;
         if(!slot1Assigned){
             rowIdx = 0;
+            slot1Assigned = true;
         }else{
             rowIdx = 7;
         }
@@ -42,8 +50,8 @@ public class ChessBoard {
             // create a chess piece
             ChessPiece p = null;
             if(col == 0 || col == 7){
-                p = new Bishop(row, col, u, this);
-//                p = new Rook(row, col, u, this);
+//                p = new Bishop(row, col, u, this);
+                p = new Rook(row, col, u, this);
             }else if( col == 1 || col == 6){
                 p = new Bishop(row, col, u, this);
 //                p = new Knight(row, col, u, this);
@@ -72,6 +80,13 @@ public class ChessBoard {
         return 8;
     }
 
+    public void printPieces(){
+        System.out.println("Printing chess pieces: ");
+        for(ChessPiece p: pieces){
+            // skip the dead pieces
+            System.out.println("row: " + p.getRow() + ", column: " + p.getColumn());
+        }
+    }
     public ChessPiece getPiece(int r, int c){
         for(ChessPiece p: pieces){
             // skip the dead pieces
@@ -88,6 +103,7 @@ public class ChessBoard {
     }
 
     public void makeMove(int sRow, int sCol, int eRow, int eCol){
+//        printPieces();
 
         //check for invalid cells
         if(invalidCell(sRow, sCol) || invalidCell(eRow, eCol)){
@@ -120,18 +136,20 @@ public class ChessBoard {
 
         // make move
 
-        // change the position of the currentPiece
-        currentPiece.setRow(eRow);
-        currentPiece.setColumn(eCol);
-        System.out.println(currentPiece.getName() + "made the move");
+
 
         ChessPiece targetPiece = this.getPiece(eRow,eCol);
         if(targetPiece != null){
             // kill the targetPiece
             targetPiece.setRow(-1);
             targetPiece.setColumn(-1);
-            System.out.println(targetPiece.getName() + "of the opponent was killed");
+            System.out.println(targetPiece.getName()+ " at row: " + eRow + ", col: " + eCol + ", of the opponent was killed");
         }
+
+        // change the position of the currentPiece
+        currentPiece.setRow(eRow);
+        currentPiece.setColumn(eCol);
+        System.out.println(currentPiece.getName() + " at row: " + sRow + ", col: " + sCol   + ", made the move to " + "row: " + eRow + ", col: " + eCol);
 
         // update the currentPlayer
         if(currentPlayer == p1){
@@ -140,10 +158,39 @@ public class ChessBoard {
             currentPlayer = p1;
         }
 
+        printBoard();
+
 
     }
 
     public void printBoard(){
 
+        //build default board config
+        Vector<Vector<String>> b = new Vector<>();
+        for(int i=0;i<8;i++){
+            Vector<String> r = new Vector<>();
+            for(int j=0;j<8;j++){
+                r.add("--");
+            }
+            b.add(r);
+        }
+
+        // add the elements positions
+        for(ChessPiece p: pieces){
+            // skip the dead pieces
+            if(p.getColumn() == -1 && p.getRow() == -1)continue;
+
+            int r = p.getRow();
+            int c = p.getColumn();
+            b.get(r).set(c, String.valueOf(p.getPlayer().getId()) + p.getName().charAt(0));
+        }
+
+        // print the board
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                System.out.print(b.get(i).get(j) + " ");
+            }
+            System.out.println(" ");
+        }
     }
 }
