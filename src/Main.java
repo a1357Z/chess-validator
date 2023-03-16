@@ -27,7 +27,8 @@ public class Main {
             System.out.println("enter target column");
             int eCol = Integer.parseInt(scanner.nextLine());
 
-            board.makeMove(sRow, sCol, eRow, eCol);
+            boolean gameOver = board.makeMove(sRow, sCol, eRow, eCol);
+            if(gameOver)break;
         }
     }
 }
