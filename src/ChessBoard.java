@@ -71,8 +71,11 @@ public class ChessBoard {
         }
 
         // add pawns
-        // int pawnRow = getPawnRow(row);
-
+        int pawnRow = getPawnRow(row);
+        for(int col=0;col < 8; col++){
+            ChessPiece p = new Pawn(pawnRow, col, u, this);
+            this.pieces.add(p);
+        }
 
 
     }
